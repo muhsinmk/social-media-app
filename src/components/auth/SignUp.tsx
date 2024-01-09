@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { Loader } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -18,6 +17,7 @@ import { useCreateUserAccount } from "@/lib/react-query/queriesAndMutations";
 import { signupValidation } from "@/lib/validation";
 import { signInAccount } from "@/lib/appwrite/api";
 import { useAuth } from "@/hooks/useAuth";
+import Loader from "../shared/Loader";
 
 const SignUp = () => {
   const { toast } = useToast();
