@@ -2,7 +2,6 @@ import { z } from "zod";
 import { useNavigate, Link } from "react-router-dom";
 import { SigninValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import {
@@ -17,6 +16,7 @@ import { Input } from "../ui/input";
 import { useToast } from "../ui/use-toast";
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 import { useAuth } from "@/hooks/useAuth";
+import Loader from "../shared/Loader";
 
 const SignIn = () => {
   const { toast } = useToast();
