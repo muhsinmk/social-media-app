@@ -17,11 +17,24 @@ import { useToast } from "../ui/use-toast";
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 import { useAuth } from "@/hooks/useAuth";
 import Loader from "../shared/Loader";
+import { useEffect } from "react";
 
 const SignIn = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { checkAuthUser, isLoading: isUserLoading } = useAuth();
+  const {
+    checkAuthUser,
+    isLoading: isUserLoading,
+    isAuthenticated,
+  } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    } else {
+      navigate("/sign-in");
+    }
+  }, [isAuthenticated, navigate]);
 
   // Query
   const { mutateAsync: signInAccount, isPending: isLoading } =
@@ -30,8 +43,8 @@ const SignIn = () => {
   const form = useForm<z.infer<typeof SigninValidation>>({
     resolver: zodResolver(SigninValidation),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "snapgram@gmail.com",
+      password: "12345678",
     },
   });
 
@@ -45,6 +58,7 @@ const SignIn = () => {
     }
 
     const isLoggedIn = await checkAuthUser();
+    console.log(isLoggedIn, "isLoggedIn");
 
     if (isLoggedIn) {
       form.reset();
@@ -79,7 +93,12 @@ const SignIn = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Email</FormLabel>
                 <FormControl>
-                  <Input type="text" className="shad-input" {...field} />
+                  <Input
+                    type="text"
+                    className="shad-input"
+                    defaultValue="snapgram@gmail.com"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -93,7 +112,12 @@ const SignIn = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Password</FormLabel>
                 <FormControl>
-                  <Input type="password" className="shad-input" {...field} />
+                  <Input
+                    type="password"
+                    className="shad-input"
+                    defaultValue="12345678"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
