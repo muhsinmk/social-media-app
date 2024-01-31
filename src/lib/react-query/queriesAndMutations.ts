@@ -1,21 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { INewUser } from "@/types";
+import { INewPost, INewUser, IUpdatePost } from "@/types";
 import {
+  createPost,
   createUserAccount,
   deleteSavedPost,
   getCurrentUser,
   getInfinitePosts,
   getRecentPosts,
+  getUsers,
   likePost,
   savePost,
   searchPosts,
   signInAccount,
   signOutAccount,
+  updatePost,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -146,6 +150,32 @@ export const useSearchPosts = (searchTerm: string) => {
   });
 };
 
+// Create Post
+export const useCreatePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (post: INewPost) => createPost(post),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+      });
+    },
+  });
+};
+
+// Update Post
+export const useUpdatePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (post: IUpdatePost) => updatePost(post),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
+      });
+    },
+  });
+};
+
 // User *********************************************************
 
 // get current user
@@ -153,5 +183,13 @@ export const useGetCurrentUser = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_CURRENT_USER],
     queryFn: getCurrentUser,
+  });
+};
+
+// Get All users
+export const useGetUsers = (limit?: number) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USERS],
+    queryFn: () => getUsers(limit),
   });
 };
